@@ -1,0 +1,48 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  E2E-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-Java@v1
+        with:
+          java-version: 11
+
+      - name: Build with maven and Run API in background
+        run: |
+          mvn clean compile
+          mvn exec:java &
+
+      - name: E2E-testing
+        uses: matt-ball/newman-action@master
+        with:
+          collection: postman/RequestsCollection.json
+
+  Unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run unit test
+        run: mvn test
+
+  Deploy:
+    needs: [E2E-testing, Unit-testing]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "quiet-meadow-01980-staging"
+          heroku_email: ${{secrets.USER_EMAIL}}
+          healthcheck: "https://quiet-meadow-01980-staging.herokuapp.com/api/health"
+          checkstring: "OK"
+          rollbackonhealthcheckfailed: true

@@ -1,0 +1,413 @@
+openapi: 3.0.3
+info:
+  title: E-baie
+  description: Application permettant de développer un service de vente aux enchères nommé eBaie (version québécoise cheap de eBay).
+  version: 1.0.0
+tags:
+  - name: seller
+    description: Vendeur sur e-baie.
+  - name: inventory
+    description: Produit sur e-baie.
+  - name: buyer
+    description: Acheteur sur e-baie.
+
+paths:
+  /inventory/{productId} :
+    get:
+      tags:
+        - inventory
+      summary: Affichage d'un produit.
+      description: En tant qu'acheteur, je désire visualiser les détails d'un produit en vente.
+      operationId: getProduct
+      parameters:
+        - name: productId
+          in: path
+          description: identifiant du produit que je desire visualiser.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemResponse"
+        401:
+          description: productId inexistant.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemGetErrorResponse"
+  /seller:
+    post:
+      tags:
+        - seller
+      summary: En tant que commerçant, j'aimerais pouvoir me créer un compte afin de vendre mes produits
+      description: Création d'un vendeur
+      operationId: createSeller
+      requestBody:
+        description: Les champs ne doivent pas être vides.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellerCreationRequest"
+        required: true
+      responses:
+        201:
+          description: CREATED
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uuid
+              description: URL vers le nouveau vendeur
+        400:
+          description: MISSING_FIELD
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerPOSTErrorResponse"
+
+
+  /seller/{sellerId}:
+    get:
+      tags:
+        - seller
+      summary: En tant qu'utilisateur du service, je désire visualiser les détails d'un vendeur
+      description: Affichage d'un vendeur
+      operationId: getSeller
+      parameters:
+        - name: sellerId
+          in: path
+          description: id du vendeur
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerResponse"
+        404:
+          description: SELLER_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerGETErrorResponse"
+
+
+  /buyer:
+    post:
+      tags:
+        - buyer
+      summary: En tant qu'utilisateur du service, je peux me créer un compte acheteur..
+      description: Creation d'un nouveau achteur.
+      requestBody:
+        description: L'acheteur doit avoir 18 ans.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyerCreationRequest"
+      responses:
+        201:
+          description: CREATED
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uuid
+              description: URL vers le nouvel acheteur.
+        400:
+          description: MISSING_FIELD.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuyerPOSTErrorResponse"
+
+  /buyer/{buyerId}:
+    get:
+      tags:
+        - buyer
+      summary: En tant qu'acheteur, je peux accéder aux détails de mon compte afin d'y suivre mes offres.
+      description: Recherche d'un acheteur selon son ID
+      operationId: getBuyer
+      parameters:
+        - name: buyerId
+          in: path
+          description: ID unique de l'acheteur
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuyerResponse"
+        404:
+          description: buyerId inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuyerNotFoundResponseError"
+
+
+  /inventory/{productId}/offer:
+    post:
+      tags:
+        - offer
+      summary: En tant qu'acheteur, je peux faire une offre sur un produit.
+      description: Création d'une offre sur un item
+      parameters:
+        - name: productId
+          in: path
+          description: identifiant du produit que je desire visualiser.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferCreation"
+      responses:
+        201:
+          description: Created.
+        400:
+          description: INVALID_AMOUNT, BIDDING_ENDED, MISSING_FIELD
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferPOSTErrorResponse'
+
+        404:
+          description: PRODUCT_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferNotFoundResponse'
+
+
+components:
+  schemas:
+    SellerCreationRequest:
+      required:
+        - name
+        - description
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        description:
+          type: string
+          example: John Doe's account
+    SellerResponse:
+      required:
+        - id
+        - name
+        - description
+        - createdAt
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uuid
+          example: "9166ab95-a782-4fe7-b5a6-75fba03e70ff"
+        name:
+          type: string
+          example: John Doe
+        description:
+          type: string
+          example: John Doe's description
+        createdAt:
+          type: string
+          format: date-time
+    SellerGETErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: SELLER_NOT_FOUND
+        message:
+          type: string
+          example: This seller was not found
+
+    SellerPOSTErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - MISSING_FIELD
+            - INVALID_DATE
+        message:
+          type: string
+
+    BuyerCreationRequest:
+      required:
+        - name
+        - birthDate
+      type: object
+      properties:
+        name:
+          type: string
+          example: louis
+        birthDate:
+          type: string
+          format: date
+          example: 1990-12-31
+    BuyerPOSTErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - MISSING_FIELD
+            - INVALID_DATE
+        message:
+          type: string
+
+    ItemResponse:
+      required:
+        - name
+        - id
+        - sellerId
+        - description
+        - initialPrice
+        - currentPrice
+        - startTime
+        - endTime
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: guitare
+        sellerId:
+          type: string
+        initialPrice:
+          type: number
+          example: 200.50
+        description:
+          type: string
+          example: guitare electrique
+        currentPrice:
+          type: number
+          example: 250
+        startTime:
+          type: string
+          example: "2020-01-01T00:00:00Z"
+        endTime:
+          type: string
+          example: "2021-01-01T00:00:00Z"
+    ItemGetErrorResponse :
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - PRODUCT_NOT_FOUND
+        message:
+          type: string
+    BuyerNotFoundResponseError :
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - BUYER_NOT_FOUND
+        message:
+          type: string
+    BuyerResponse:
+      required:
+        - id
+        - name
+        - biddingOffers
+        - obtainedProducts
+
+      type: object
+      properties:
+        id:
+          type: string
+          example: "9166ab95-a782-4fe7-b5a6-75fba03e70ff"
+        name:
+          type: string
+          example: Robert
+        biddingOffers:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                format: uuid
+                example: "9166ab95-a782-4fe7-b5a6-75fba03e70ff"
+              amount:
+                type: integer
+                example: 200.25
+              createdAt:
+                type: string
+                format: date-time
+              biddintStatus:
+                type: string
+                example: "ongoing"
+
+        obtainedProducts:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                format: uuid
+                example: "9166ab95-a782-4fe7-b5a6-75fba03e70ff"
+              obtainedAt:
+                type: string
+                format: date-time
+
+    OfferCreation:
+      required:
+        - buyerId
+        - amount
+      type: object
+      properties:
+        buyerId:
+          type: string
+          format: uuid
+          example: "9166ab95-a782-4fe7-b5a6-75fba03e70ff"
+        amount:
+          type: integer
+          example: 200
+
+
+    OfferNotFoundResponse :
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - BUYER_NOT_FOUND
+            - PRODUCT_NOT_FOUND
+        message:
+          type: string
+    OfferPOSTErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - MISSING_FIELD
+            - INVALID_DATE
+            - BIDDIND_ENDED
+        message:
+          type: string

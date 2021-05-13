@@ -1,0 +1,1 @@
+web: java -cp target/classes:target/dependency/* ca.ulaval.glo2003.ebaie.EBaieMain

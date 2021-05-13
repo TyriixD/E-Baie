@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - linting_and_CI
+      - sellerReview
+      - Mises_à_jours_des_librairies
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run lint
+        run: mvn checkstyle:check
+
+  Unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run unit test
+        run: mvn test
+  
+  Build-and-E2E-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-Java@v1
+        with:
+          java-version: 11
+
+      - name: Build with maven and Run API in background
+        run: |
+              mvn clean compile
+              mvn exec:java &
+
+      - name: E2E-testing
+        uses: matt-ball/newman-action@master
+        with:
+          collection: postman/RequestsCollection.json

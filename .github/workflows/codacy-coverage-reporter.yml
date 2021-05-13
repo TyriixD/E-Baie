@@ -1,0 +1,23 @@
+name: codacy-coverage-reporter
+
+on: ["push"]
+
+jobs:
+  codacy-coverage-reporter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup Java
+        uses: actions/setup-Java@v1
+        with:
+          java-version: 11
+
+      - name: Generate jacoco.xml
+        run: mvn jacoco:report&
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.PROJECT_API_TOKEN }}
+          coverage-reports: JacocoReports/jacoco.xml

@@ -1,0 +1,4 @@
+{
+  "staging": "https://quiet-meadow-01980-staging.herokuapp.com",
+  "production": "https://sheltered-hamlet-76818-prod.herokuapp.com"
+}

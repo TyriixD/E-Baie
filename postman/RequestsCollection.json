@@ -1,0 +1,1122 @@
+{
+  "info": {
+    "_postman_id": "1afbffef-56fe-416a-975c-19c002cd4b2a",
+    "name": "GET_Inventory_test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "201 Création d'un seller",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "pm.test(\"Creation seller status test is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "    \r",
+              "    if (pm.response){\r",
+              "    let headerValue = pm.response.headers.get(\"Location\").slice(33);\r",
+              "    console.log(headerValue)\r",
+              "    pm.collectionVariables.set(\"seller\", headerValue);\r",
+              "      \r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n      \"name\": \"Seller 1\",\r\n      \"description\": \"Seller 1  description\"\r\n     \r\n}"
+        },
+        "url": "http://localhost:8080/api/seller"
+      },
+      "response": []
+    },
+    {
+      "name": "201 Création d'un product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "pm.test(\"Creation product status test is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "    let headerValue = pm.response.headers.get(\"Location\").slice(36);\r",
+              "    pm.collectionVariables.set(\"product\", headerValue);\r",
+              "});\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"Product 1\",\r\n  \"description\": \"Product 1 description\",\r\n  \"initialPrice\": \"100.00\", \r\n  \"startTime\": \"2021-05-01T00:00:00-02:00\",\r\n  \"duration\": \"2\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "201 Création d'un product expiré",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "pm.test(\"Creation product status test is 201\", function () {\r",
+              "    let headerValue = pm.response.headers.get(\"Location\").slice(36);\r",
+              "    pm.collectionVariables.set(\"product_expired\", headerValue);\r",
+              "});\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"Product 1\",\r\n  \"description\": \"Product 1 description\",\r\n  \"initialPrice\": \"100.00\", \r\n  \"startTime\": \"2020-05-01T00:00:00-02:00\",\r\n  \"duration\": \"2\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "201 Création d'un buyer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Creation buyer status test is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "    let headerValue = pm.response.headers.get(\"Location\").slice(32);\r",
+              "    pm.collectionVariables.set(\"buyer\", headerValue);\r",
+              "});\r",
+              "    \r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"string\",\r\n  \"birthDate\": \"1990-12-31\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/buyer"
+      },
+      "response": []
+    },
+    {
+      "name": "200 Affichage list products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status test\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "404 Exception id product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"messing field status test is 404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when product not found\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"PRODUCT_NOT_FOUND\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"L'id du produit fourni n'existe pas\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/inventory/0"
+      },
+      "response": []
+    },
+    {
+      "name": "404 Exception seller product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", () => {\r",
+              "  pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when seller not exist\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"SELLER_NOT_FOUND\");\r",
+              "  pm.expect(responseJson.message).to.eql(\"L'id du vendeur fournis n'existe pas\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"SELLER_NOT_FOUND\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"L'id du vendeur fournis n'existe pas\");\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"0\",\r\n  \"name\": \"Momo\",\r\n  \"description\": \"Item 1 description\",\r\n  \"initialPrice\": \"100.00\",\r\n  \"startTime\": \"2020-01-01T00:00:00-02:00\", \r\n  \"duration\": 3\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception datetime product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid startTime status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when invalid dateTime is given\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_DATETIME\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"le format de la date est invalide\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_DATETIME\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"le format de la date est invalide\");\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"Product 1\",\r\n  \"description\": \"Product 1 description\",\r\n  \"initialPrice\": \"100.00\", \r\n  \"startTime\": \"\",\r\n  \"duration\": \"2\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception duration product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid duration status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when invalid duration is given\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_DATERANGE\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"La durée fournie est invalide\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"Product 1\",\r\n  \"description\": \"Product 1 description\",\r\n  \"initialPrice\": \"100.00\", \r\n  \"startTime\": \"2020-01-01T00:00:00-02:00\",\r\n  \"duration\": \"0\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception initialprice product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid initialPrice status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when invalid initialPrice is given\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_AMOUNT\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"Le prix initial fourni est invalide\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_AMOUNT\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"Le prix initial fourni est invalide\");\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"Product 1\",\r\n  \"description\": \"Product 1 description\",\r\n  \"initialPrice\": \"0\", \r\n  \"startTime\": \"2020-01-01T00:00:00-02:00\",\r\n  \"duration\": \"3\" \r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception description product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Description messing field status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when description field is messing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"le sellerId, le name ou la description ne devraient pas être vides\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"le sellerId, le name ou la description ne devraient pas être vides\");\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"Product 1\",\r\n  \"description\": \"\",\r\n  \"initialPrice\": \"100.00\", \r\n  \"startTime\": \"2020-01-01T00:00:00-02:00\",\r\n  \"duration\": \"0\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception name product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Name messing field status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when name field is messing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"le sellerId, le name ou la description ne devraient pas être vides\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"le sellerId, le name ou la description ne devraient pas être vides\");\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sellerId\": \"{{seller}}\",\r\n  \"name\": \"\",\r\n  \"description\": \"des\",\r\n  \"initialPrice\": \"100.00\", \r\n  \"startTime\": \"2020-01-01T00:00:00-02:00\",\r\n  \"duration\": \"0\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception description seller",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"description field missing for seller creation test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when seller description is missing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"name or description should not be empty\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"name or description should not be empty\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Seller\",\n  \"description\": \"\"\n}"
+        },
+        "url": "http://localhost:8080/api/seller"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception name seller",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Name field missing for seller creation test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when seller name is missing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"name or description should not be empty\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"name or description should not be empty\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"description\": \"vendeur 1 description\"\n}"
+        },
+        "url": "http://localhost:8080/api/seller"
+      },
+      "response": []
+    },
+    {
+      "name": "200 Retourne un seller existant",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Seller creation test is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/seller/{{seller}}"
+      },
+      "response": []
+    },
+    {
+      "name": "200 Affichage list sellers",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Return all Sellers creation test is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/seller"
+      },
+      "response": []
+    },
+    {
+      "name": "404 Exception seller inexistant",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid id seller is given test is  404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when seller description is missing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"SELLER_NOT_FOUND\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"L'id du vendeur fournis n'existe pas\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/seller/0"
+      },
+      "response": []
+    },
+    {
+      "name": "404 Exception buyer inexistant",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Invalid id buyer is given test is  404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when buyer description is missing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"BUYER_NOT_FOUND\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"L'id de l'acheteur est inexistant\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/buyer/1swdda",
+        "description": "400 retourner un buyer inexistant\r\n"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception name buyer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Name field missing for buyer creation test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when buyer name is missing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"name should not be empty\");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"name should not be empty\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"\",\r\n  \"birthDate\": \"1990-12-31\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/buyer"
+      },
+      "response": []
+    },
+    {
+      "name": "200 Retourne un buyer existant",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Buyer creation test is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/buyer/{{buyer}}"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception datetime buyer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Name field missing for seller creation test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when seller name is missing\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_DATETIME\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"Le format de la date est invalide \");\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : Code in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_DATETIME\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Payload : message in body\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.message).to.eql(\"Le format de la date est invalide \");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"string\",\r\n  \"birthDate\": \"1990-121\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/buyer"
+      },
+      "response": []
+    },
+    {
+      "name": "201 Création d'une offre",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Creation offer status test is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "    \r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"buyerId\": \"{{buyer}}\",\r\n  \"amount\": 120\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory/{{product}}/offer"
+      },
+      "response": []
+    },
+    {
+      "name": "404 Exception id product offer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"product id not found status test is 404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when product not found\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"PRODUCT_NOT_FOUND\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"L'id du produit fourni n'existe pas\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"buyerId\": 0,\r\n  \"amount\": 120\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory/0000/offer"
+      },
+      "response": []
+    },
+    {
+      "name": "404 Exception id buyer offer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"buyer id not found status test is 404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when buyer not found\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"BUYER_NOT_FOUND\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"L'id de l'acheteur est inexistant\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"buyerId\": \"0\",\r\n  \"amount\": 120\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory/{{product}}/offer"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception amount offer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"messing field status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when invalid amount\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"INVALID_AMOUNT\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"l'amount fourni n'est pas assez élevé\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"buyerId\": \"{{buyer}}\",\r\n  \"amount\": 80\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory/{{product}}/offer"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception missing field offer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"messing field status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when missing field\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"MISSING_FIELD\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"le buyerId ou l'amount ne devraient pas être vides\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"buyerId\": \"{{buyer}}\",\r\n  \"amount\": \"\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory/{{product}}/offer"
+      },
+      "response": []
+    },
+    {
+      "name": "400 Exception bidding ended offer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"messing field status test is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Code and message error when bidding ended\", () => {\r",
+              "  const responseJson = pm.response.json();\r",
+              "  pm.expect(responseJson.code).to.eql(\"BIDDING_ENDED\");\r",
+              "    pm.expect(responseJson.message).to.eql(\"Enchère terminée\");\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"buyerId\": \"{{buyer}}\",\r\n  \"amount\": \"120\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8080/api/inventory/{{product_expired}}/offer"
+      },
+      "response": []
+    },
+    {
+      "name": "200 Health",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"status test is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/health"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "seller",
+      "value": ""
+    },
+    {
+      "key": "product",
+      "value": ""
+    },
+    {
+      "key": "buyer",
+      "value": ""
+    },
+    {
+      "key": "product_expired",
+      "value": ""
+    }
+  ]
+}
